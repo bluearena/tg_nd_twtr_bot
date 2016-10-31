@@ -21,7 +21,7 @@ func main() {
 	accessToken := flags.String("access-token", "", "Twitter Access Token")
 	accessSecret := flags.String("access-secret", "", "Twitter Access Secret")
 	tgtoken := flags.String("tg-token", "", "Telegram token")
-	tg_chat_id := flags.Int("tg-chat-id", "", "Telegram token")
+	tg_chat_id := flags.Int64("tg-chat-id", 0, "Telegram token")
 
 	flags.Parse(os.Args[1:])
 	flagutil.SetFlagsFromEnv(flags, "TWITTER_BOT")
@@ -55,7 +55,7 @@ func main() {
 		msg += "\n\n"
 		msg += tweet.Text
 
-		tgBot.Send(tgbotapi.NewMessage(tg_chat_id, msg))
+		tgBot.Send(tgbotapi.NewMessage(*tg_chat_id, msg))
 	}
 	demux.DM = func(dm *twitter.DirectMessage) {
 		log.Print(dm)
@@ -65,7 +65,7 @@ func main() {
 		msg += "\n\n"
 		msg += dm.Text
 
-		tgBot.Send(tgbotapi.NewMessage(tg_chat_id, msg))
+		tgBot.Send(tgbotapi.NewMessage(*tg_chat_id, msg))
 	}
 	demux.Event = func(event *twitter.Event) {
 		log.Print(event)
@@ -73,7 +73,7 @@ func main() {
 		msg += "\n"
 		msg += event.Event
 
-		tgBot.Send(tgbotapi.NewMessage(tg_chat_id, msg))
+		tgBot.Send(tgbotapi.NewMessage(*tg_chat_id, msg))
 	}
 
 	fmt.Println("Starting Stream...")
